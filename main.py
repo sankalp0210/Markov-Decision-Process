@@ -19,8 +19,9 @@ unit_step = float(raw_input())
 # initialisation
 final_util = deepcopy(data)
 temp_util = deepcopy(data)
+move = [['-' for i in range(m)] for j in range(n)]
 
-
+bt = {0:'S', 1:'E', 2:'N',3:'W'}
 # checking if the state is valid or not
 def check_state(p, q):
     if( p>=n or q>=m or p<0 or q<0 or [p, q] in wall):
@@ -41,7 +42,7 @@ def argmax(p,q):
     moveVal[1] = 0.8*stateVal[1] + 0.1*stateVal[0] + 0.1*stateVal[2]
     moveVal[2] = 0.8*stateVal[2] + 0.1*stateVal[1] + 0.1*stateVal[3]
     moveVal[3] = 0.8*stateVal[3] + 0.1*stateVal[0] + 0.1*stateVal[2]
-
+    move[i][j] = bt[moveVal.index(max(moveVal))]
     return max(moveVal)
 
 
@@ -63,7 +64,7 @@ while(delta >= 0.01):
             if not ([i, j] in end or [i,j] in wall):
                 final_util[i][j] = 0.99*argmax(i,j) + unit_step
             if temp_util[i][j] != 0:
-                delta = max(delta, abs(final_util[i][j] - temp_util[i][j])/temp_util[i][j])
+                delta = max(delta, abs((final_util[i][j] - temp_util[i][j])/temp_util[i][j]))
             else:
                 delta = max(delta, abs(final_util[i][j] - temp_util[i][j]))
     for i in range(n):
@@ -73,3 +74,10 @@ while(delta >= 0.01):
         print st
     print '\n' 
 print "Number of Iterations : ", numIter
+
+for i in range(n):
+    st = ''
+    for j in range(m):
+        st += move[i][j] + '\t'
+    print st
+print '\n' 
